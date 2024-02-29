@@ -1,7 +1,7 @@
 {
   "name": "com.karabaev.descriptors.abstractions",
-  "displayName": "Abstractions for descriptors",
-  "version": "0.1.0",
+  "displayName": "com.karabaev.descriptors.abstractions",
+  "version": "0.2.0",
   "unity": "2022.3",
   "author": "Karabaev Maksim"
 }

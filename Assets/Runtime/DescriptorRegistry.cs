@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace com.karabaev.descriptors.abstractions.Runtime
+namespace com.karabaev.descriptors.abstractions
 {
   public abstract class DescriptorRegistry<TId, TDescriptor>
-    : IDescriptorRegistry<TId, TDescriptor>, IMutableDescriptorRegistry<TId, TDescriptor>
+    : IDescriptorRegistry<TId, TDescriptor>, IMutableDescriptorRegistry
     where TId : IEquatable<TId>
     where TDescriptor : IDescriptor
   {
@@ -20,12 +21,16 @@ namespace com.karabaev.descriptors.abstractions.Runtime
 
     public TDescriptor Require(TId id) => _items[id];
 
-    public void Add(TId id, TDescriptor descriptor) => _items.Add(id, descriptor);
+    public TDescriptor RequireSingle() => _items.Values.First();
 
-    public void Remove(TId id) => _items.Remove(id);
+    Type IMutableDescriptorRegistry.DescriptorType => typeof(TDescriptor);
 
-    public void Replace(TId id, TDescriptor descriptor) => _items[id] = descriptor;
+    void IMutableDescriptorRegistry.Add(object id, IDescriptor descriptor) => _items.Add((TId)id, (TDescriptor)descriptor);
 
-    public void Clear() => _items.Clear();
+    void IMutableDescriptorRegistry.Remove(object id) => _items.Remove((TId)id);
+
+    void IMutableDescriptorRegistry.Replace(object id, IDescriptor descriptor) => _items[(TId)id] = (TDescriptor)descriptor;
+
+    void IMutableDescriptorRegistry.Clear() => _items.Clear();
   }
 }

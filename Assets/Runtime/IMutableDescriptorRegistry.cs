@@ -1,15 +1,16 @@
 ﻿using System;
 
-namespace com.karabaev.descriptors.abstractions.Runtime
+namespace com.karabaev.descriptors.abstractions
 {
-  public interface IMutableDescriptorRegistry<in TId, in TDescriptor> where TId : IEquatable<TId>
-                                                                      where TDescriptor : IDescriptor
+  public interface IMutableDescriptorRegistry
   {
-    void Add(TId id, TDescriptor descriptor);
+    Type DescriptorType { get; }
+    
+    void Add(object id, IDescriptor descriptor);
 
-    void Remove(TId id);
+    void Remove(object id);
 
-    void Replace(TId id, TDescriptor descriptor);
+    void Replace(object id, IDescriptor descriptor);
 
     void Clear();
   }

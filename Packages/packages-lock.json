@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": {
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "809d23edae0df58fd0f61b4b6f67855c59d1b2fb"
+    },
+    "com.karabaev.utilities": {
+      "version": "https://git.jetbrains.space/rdds2/gk/com.karabaev.utilities.git?path=Assets/",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4d7204f76d935f7617b6be5e93456e19735e2e9c"
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 1,

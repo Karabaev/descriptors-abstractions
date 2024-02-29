@@ -1,7 +1,9 @@
 {
     "name": "com.karabaev.descriptors.abstractions",
     "rootNamespace": "com.karabaev.descriptors.abstractions",
-    "references": [],
+    "references": [
+        "com.karabaev.utilities"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

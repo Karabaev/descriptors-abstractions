@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.karabaev.descriptors.abstractions.Runtime
+namespace com.karabaev.descriptors.abstractions
 {
   public interface IDescriptorRegistry<in TId, out TDescriptor> where TId : IEquatable<TId>
                                                                 where TDescriptor : IDescriptor
@@ -11,5 +11,7 @@ namespace com.karabaev.descriptors.abstractions.Runtime
     TDescriptor? Get(TId id);
     
     TDescriptor Require(TId id);
+
+    TDescriptor RequireSingle();
   }
 }
