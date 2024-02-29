@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.karabaev.descriptors
+namespace com.karabaev.descriptors.abstractions.Runtime
 {
   public abstract class DescriptorRegistry<TId, TDescriptor>
     : IDescriptorRegistry<TId, TDescriptor>, IMutableDescriptorRegistry<TId, TDescriptor>

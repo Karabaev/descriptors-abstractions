@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.karabaev.descriptors
+namespace com.karabaev.descriptors.abstractions.Runtime
 {
   public interface IDescriptorRegistry<in TId, out TDescriptor> where TId : IEquatable<TId>
                                                                 where TDescriptor : IDescriptor
