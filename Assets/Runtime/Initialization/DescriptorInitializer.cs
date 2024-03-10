@@ -8,13 +8,14 @@ namespace com.karabaev.descriptors.abstractions.Initialization
 {
   public class DescriptorInitializer
   {
+    private readonly ReflectionUtils.AssembliesCollection _assembliesCollection;
     private readonly IDescriptorSourceProvider _descriptorSourceProvider;
     private readonly IReadOnlyList<IMutableDescriptorRegistry> _registries;
 
-    public async ValueTask InitializeAsync(params string[] descriptorAssemblies)
+    public async ValueTask InitializeAsync()
     {
       var descriptorSourceTypes = ReflectionUtils
-       .FindAllTypesWithAttributeAndInterface<DescriptorSourceAttribute, IDescriptorRegistrySource>(descriptorAssemblies)
+       .FindAllTypesWithAttributeAndInterface<DescriptorSourceAttribute, IDescriptorRegistrySource>(_assembliesCollection)
        .ToList();
 
       var tasks = descriptorSourceTypes.Select(t => _descriptorSourceProvider.GetAsync(t.Item2.Key, t.Item1)).ToList();
@@ -33,10 +34,12 @@ namespace com.karabaev.descriptors.abstractions.Initialization
       }
     }
 
-    public DescriptorInitializer(IDescriptorSourceProvider descriptorSourceProvider, IReadOnlyList<IMutableDescriptorRegistry> registries)
+    public DescriptorInitializer(IDescriptorSourceProvider descriptorSourceProvider, IReadOnlyList<IMutableDescriptorRegistry> registries,
+      ReflectionUtils.AssembliesCollection assembliesCollection)
     {
       _descriptorSourceProvider = descriptorSourceProvider;
       _registries = registries;
+      _assembliesCollection = assembliesCollection;
     }
   }
 }
