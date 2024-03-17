@@ -6,7 +6,13 @@ namespace com.karabaev.descriptors.abstractions.Initialization
   public class DescriptorSourceAttribute : Attribute
   {
     public string Key { get; }
+    
+    public Type ProviderType { get; }
 
-    public DescriptorSourceAttribute(string key) => Key = key;
+    public DescriptorSourceAttribute(string key, Type providerType)
+    {
+      Key = key;
+      ProviderType = providerType;
+    }
   }
 }

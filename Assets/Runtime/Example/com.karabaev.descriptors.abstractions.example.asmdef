@@ -1,0 +1,16 @@
+{
+    "name": "com.karabaev.descriptors.abstractions.example",
+    "rootNamespace": "com.karabaev.descriptors.abstractions.example",
+    "references": [
+        "com.karabaev.descriptors.abstractions"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

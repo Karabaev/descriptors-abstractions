@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using com.karabaev.utilities;
 
@@ -8,17 +9,31 @@ namespace com.karabaev.descriptors.abstractions.Initialization
 {
   public class DescriptorInitializer
   {
-    private readonly ReflectionUtils.AssembliesCollection _assembliesCollection;
-    private readonly IDescriptorSourceProvider _descriptorSourceProvider;
+    private readonly IReadOnlyList<IDescriptorSourceProvider> _descriptorSourceProviders;
     private readonly IReadOnlyList<IMutableDescriptorRegistry> _registries;
+    private readonly DescriptorSourceTypes _sourceTypes;
 
     public async ValueTask InitializeAsync()
     {
-      var descriptorSourceTypes = ReflectionUtils
-       .FindAllTypesWithAttributeAndInterface<DescriptorSourceAttribute, IDescriptorRegistrySource>(_assembliesCollection)
-       .ToList();
+      var tasks = _sourceTypes.SourceTypes.Select(sourceType =>
+      {
+        var attribute = sourceType.GetCustomAttribute<DescriptorSourceAttribute>();
+        if(attribute == null)
+        {
+          throw new NullReferenceException(
+            $"Could not find {nameof(DescriptorSourceAttribute)} attribute on descriptor source type. DescriptorSourceType={sourceType.Name}");
+        }
+        var key = attribute.Key;
+        var providerType = attribute.ProviderType;
+        var provider = _descriptorSourceProviders.FirstOrDefault(p => p.GetType() == providerType);
+        if(provider == null)
+        {
+          throw new NullReferenceException(
+            $"Could not find descriptor source provider for source. RequiredProvider={providerType.Name}, SourceType={sourceType.Name}");
+        }
 
-      var tasks = descriptorSourceTypes.Select(t => _descriptorSourceProvider.GetAsync(t.Item2.Key, t.Item1)).ToList();
+        return provider.GetAsync(key, sourceType);
+      }).ToList();
 
       var sources = await CommonUtils.WhenAll(tasks);
       var sourcesDict = sources.ToDictionary(s => s.DescriptorType, s => s);
@@ -34,12 +49,12 @@ namespace com.karabaev.descriptors.abstractions.Initialization
       }
     }
 
-    public DescriptorInitializer(IDescriptorSourceProvider descriptorSourceProvider, IReadOnlyList<IMutableDescriptorRegistry> registries,
-      ReflectionUtils.AssembliesCollection assembliesCollection)
+    public DescriptorInitializer(IReadOnlyList<IDescriptorSourceProvider> descriptorSourceProviders, IReadOnlyList<IMutableDescriptorRegistry> registries,
+      DescriptorSourceTypes sourceTypes)
     {
-      _descriptorSourceProvider = descriptorSourceProvider;
+      _descriptorSourceProviders = descriptorSourceProviders;
       _registries = registries;
-      _assembliesCollection = assembliesCollection;
+      _sourceTypes = sourceTypes;
     }
   }
 }
