@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace com.karabaev.descriptors.abstractions
+namespace com.karabaev.descriptors.abstractions.Initialization
 {
   public interface IMutableDescriptorRegistry
   {

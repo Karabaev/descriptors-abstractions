@@ -8,18 +8,25 @@ namespace com.karabaev.descriptors.abstractions.Initialization
 {
   public class DescriptorInitializer
   {
-    private readonly ReflectionUtils.AssembliesCollection _assembliesCollection;
-    private readonly IDescriptorSourceProvider _descriptorSourceProvider;
+    private readonly IReadOnlyList<IDescriptorSourceProvider> _descriptorSourceProviders;
     private readonly IReadOnlyList<IMutableDescriptorRegistry> _registries;
+    private readonly IReadOnlyList<IDescriptorRegistrySource> _sources;
 
     public async ValueTask InitializeAsync()
     {
-      var descriptorSourceTypes = ReflectionUtils
-       .FindAllTypesWithAttributeAndInterface<DescriptorSourceAttribute, IDescriptorRegistrySource>(_assembliesCollection)
-       .ToList();
+      var tasks = _sources.Select(source =>
+      {
+        var provider = _descriptorSourceProviders.FirstOrDefault(p => p.GetType() == source.ProviderType);
+        if(provider == null)
+        {
+          throw new NullReferenceException(
+            $"Could not find descriptor source provider for source. RequiredProvider={source.ProviderType.Name}, SourceType={source.GetType().Namespace}");
+        }
 
-      var tasks = descriptorSourceTypes.Select(t => _descriptorSourceProvider.GetAsync(t.Item2.Key, t.Item1)).ToList();
+        return provider.GetAsync(source.Key, source.DescriptorType);
+      }).ToList();
 
+      
       var sources = await CommonUtils.WhenAll(tasks);
       var sourcesDict = sources.ToDictionary(s => s.DescriptorType, s => s);
       
@@ -34,12 +41,12 @@ namespace com.karabaev.descriptors.abstractions.Initialization
       }
     }
 
-    public DescriptorInitializer(IDescriptorSourceProvider descriptorSourceProvider, IReadOnlyList<IMutableDescriptorRegistry> registries,
-      ReflectionUtils.AssembliesCollection assembliesCollection)
+    public DescriptorInitializer(IReadOnlyList<IDescriptorSourceProvider> descriptorSourceProviders, IReadOnlyList<IMutableDescriptorRegistry> registries,
+      IReadOnlyList<IDescriptorRegistrySource> sources)
     {
-      _descriptorSourceProvider = descriptorSourceProvider;
+      _descriptorSourceProviders = descriptorSourceProviders;
       _registries = registries;
-      _assembliesCollection = assembliesCollection;
+      _sources = sources;
     }
   }
 }
