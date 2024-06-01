@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using com.karabaev.utilities;
+using Cysharp.Threading.Tasks;
 
 namespace com.karabaev.descriptors.abstractions.Initialization
 {
@@ -13,7 +12,7 @@ namespace com.karabaev.descriptors.abstractions.Initialization
     private readonly IReadOnlyList<IMutableDescriptorRegistry> _registries;
     private readonly DescriptorSourceTypes _sourceTypes;
 
-    public async ValueTask InitializeAsync()
+    public async UniTask InitializeAsync()
     {
       var tasks = _sourceTypes.SourceTypes.Select(sourceType =>
       {
@@ -35,10 +34,11 @@ namespace com.karabaev.descriptors.abstractions.Initialization
         return provider.GetAsync(key, sourceType);
       }).ToList();
 
-      var sources = await CommonUtils.WhenAll(tasks);
+      
+      var sources = await UniTask.WhenAll(tasks);
       var sourcesDict = sources.ToDictionary(s => s.DescriptorType, s => s);
       
-      if(_registries.Count != sources.Count)
+      if(_registries.Count != sources.Length)
         throw new InvalidOperationException("Descriptor registries count is not equal to descriptor sources count");
       
       foreach(var registry in _registries)
