@@ -16,6 +16,8 @@ namespace com.karabaev.descriptors.abstractions
 
     public IEnumerable<TId> Ids => _items.Keys;
 
+    public IReadOnlyDictionary<TId, TDescriptor> HashMap => _items;
+
     public TDescriptor? Get(TId id)
     {
       _items.TryGetValue(id, out var result);

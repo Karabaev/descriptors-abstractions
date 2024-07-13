@@ -1,1 +1,2 @@
-"com.karabaev.descriptors.abstractions": "https://git.jetbrains.space/rdds2/gk/com.karabaev.descriptors.abstractions.git?path=Assets"
+# Installation
+Add package from Git URL: https://github.com/Karabaev/descriptors-abstractions.git?path=Assets
