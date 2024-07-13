@@ -14,6 +14,8 @@ namespace com.karabaev.descriptors.abstractions
 
     public IEnumerable<TDescriptor> Items => _items.Values;
 
+    public IEnumerable<TId> Ids => _items.Keys;
+
     public TDescriptor? Get(TId id)
     {
       _items.TryGetValue(id, out var result);
